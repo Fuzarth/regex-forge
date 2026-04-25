@@ -2,6 +2,8 @@
 
 Mini outil local pour préparer des renommages avec des expressions régulières.
 
+Version bulgare : [README.bg.md](README.bg.md)
+
 ## Lancer sans Docker
 
 Ouvre directement le fichier :
