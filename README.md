@@ -2,18 +2,15 @@
 
 Mini outil local pour préparer des renommages avec des expressions régulières.
 
-## Lancer localement sans Docker
+## Lancer sans Docker
 
-Depuis le dossier du projet :
+Ouvre directement le fichier :
 
-```powershell
-cd app
-python -m http.server 8099
+```text
+app/index.html
 ```
 
-Puis ouvrir :
-
-http://localhost:8099
+Tu peux aussi aller dans le dossier `app`, puis double-cliquer sur `index.html`.
 
 ## Lancer avec Docker Compose
 
@@ -23,14 +20,38 @@ Depuis le dossier du projet :
 docker compose up -d
 ```
 
-Puis ouvrir :
+Puis ouvre :
 
+```text
 http://localhost:8109
+```
 
 Pour arrêter :
 
 ```powershell
 docker compose down
+```
+
+## Installation avec Portainer
+
+Dans Portainer :
+
+1. Va dans `Stacks`.
+2. Clique sur `Add stack`.
+3. Colle le contenu de `docker-compose.portainer.yml` dans le Web editor.
+4. Déploie le stack.
+5. Ouvre l'adresse de ton serveur sur le port `8109`.
+
+Exemple :
+
+```text
+http://IP_DU_SERVEUR:8109
+```
+
+Le fichier `docker-compose.portainer.yml` construit l'image directement depuis le dépôt GitHub officiel :
+
+```text
+https://github.com/Fuzarth/regex-forge.git
 ```
 
 ## Fonctions
@@ -47,34 +68,9 @@ docker compose down
 - reset des blocs et scénarios vers la configuration de base ;
 - interface en français ou en bulgare, avec choix mémorisé dans le navigateur.
 
-## Installation avec Portainer
-
-1. Crée un dossier sur ton NAS :
-   /volume2/docker/regex-forge
-
-2. Mets ces fichiers dedans :
-   - docker-compose.yml
-   - nginx.conf
-   - dossier app avec index.html
-
-3. Dans Portainer :
-   Stacks > Add stack > Upload ou Web editor
-
-4. Lance le stack.
-
-5. Ouvre :
-   http://IP_DU_NAS:8109
-
-Note : le port `8099` est déjà utilisé par `joal` sur le NAS. Le stack Portainer `regex-forge` a donc été déployé sur le port `8109`.
-Le stack monte directement `/volume2/docker/regex-forge/app` et `/volume2/docker/regex-forge/nginx.conf`, donc une modification de `app/index.html` sur le NAS est prise en compte sans rebuild d'image.
-
 ## Fichiers Docker
 
 - `Dockerfile` : image légère basée sur `nginx:alpine`.
 - `nginx.conf` : sert l'application statique, désactive le cache HTML et garde un cache court pour les assets.
-- `docker-compose.yml` : expose l'application sur le port `8109`, monte les fichiers statiques en lecture seule et ajoute un healthcheck.
-
-## Notes
-
-Cette version ne contient pas encore d'IA.
-Elle fonctionne entièrement dans le navigateur.
+- `docker-compose.yml` : construit et lance l'application depuis le dossier local.
+- `docker-compose.portainer.yml` : construit et lance l'application directement depuis GitHub.
