@@ -4,10 +4,6 @@
 
 Френска версия: [README.md](README.md)
 
-## Подкрепа за проекта
-
-[![Остави бакшиш с PayPal](https://pics.paypal.com/00/s/NTQzYmJmNmItNTk4OS00NGQ3LTliMmQtNmY4ZTlkYjAxZTlj/file.PNG)](https://www.paypal.com/donate?business=G2ZMVZLXK8SYC&no_recurring=0&item_name=%D0%9D%D1%8F%D0%BC%D0%B0%20%D0%B4%D0%B0%20%D0%BC%D0%BE%D0%B3%D0%B0%20%D0%B4%D0%B0%20%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%BE%D0%BB%D0%B8%D1%80%D0%B0%D0%BC%20%D1%81%D0%B2%D0%B5%D1%82%D0%B0%20%D1%81%D0%B0%D0%BC%2C%20%D0%BD%D0%BE%20%D1%89%D0%B5%20%D0%B2%D0%B8%20%D0%BF%D0%BE%D0%BC%D0%BD%D1%8F%2C%20%D0%BA%D0%BE%D0%B3%D0%B0%D1%82%D0%BE%20%D1%83%D1%81%D0%BF%D0%B5%D1%8F%20%E2%98%BA%EF%B8%8F&currency_code=EUR)
-
 ## Стартиране без Docker
 
 Отвори директно файла:
@@ -78,3 +74,7 @@ https://github.com/Fuzarth/regex-forge.git
 - `nginx.conf`: сервира статичното приложение, изключва HTML кеша и оставя кратък кеш за assets.
 - `docker-compose.yml`: изгражда и стартира приложението от локалната папка.
 - `docker-compose.portainer.yml`: изгражда и стартира приложението директно от GitHub.
+
+<br>
+
+[![Остави бакшиш с PayPal](https://pics.paypal.com/00/s/NTQzYmJmNmItNTk4OS00NGQ3LTliMmQtNmY4ZTlkYjAxZTlj/file.PNG)](https://www.paypal.com/donate?business=G2ZMVZLXK8SYC&no_recurring=0&item_name=%D0%9D%D1%8F%D0%BC%D0%B0%20%D0%B4%D0%B0%20%D0%BC%D0%BE%D0%B3%D0%B0%20%D0%B4%D0%B0%20%D0%BA%D0%BE%D0%BD%D1%82%D1%80%D0%BE%D0%BB%D0%B8%D1%80%D0%B0%D0%BC%20%D1%81%D0%B2%D0%B5%D1%82%D0%B0%20%D1%81%D0%B0%D0%BC%2C%20%D0%BD%D0%BE%20%D1%89%D0%B5%20%D0%B2%D0%B8%20%D0%BF%D0%BE%D0%BC%D0%BD%D1%8F%2C%20%D0%BA%D0%BE%D0%B3%D0%B0%D1%82%D0%BE%20%D1%83%D1%81%D0%BF%D0%B5%D1%8F%20%E2%98%BA%EF%B8%8F&currency_code=EUR)
