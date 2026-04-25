@@ -10,8 +10,6 @@ Ouvre directement le fichier :
 app/index.html
 ```
 
-Tu peux aussi aller dans le dossier `app`, puis double-cliquer sur `index.html`.
-
 ## Lancer avec Docker Compose
 
 Depuis le dossier du projet :
