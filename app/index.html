@@ -1,0 +1,1368 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Regex Forge</title>
+  <style>
+    :root {
+      --bg: #0b0d10;
+      --panel: #15191f;
+      --panel2: #0f1318;
+      --panel3: #1a2028;
+      --text: #eef3ff;
+      --muted: #98a6b8;
+      --border: #2a3340;
+      --accent: #55c7f7;
+      --accent2: #a7f3d0;
+      --ok: #86efac;
+      --bad: #fca5a5;
+      --warn: #fde68a;
+      --info: #bfdbfe;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        linear-gradient(145deg, rgba(85, 199, 247, .09), transparent 34%),
+        linear-gradient(25deg, rgba(167, 243, 208, .07), transparent 40%),
+        var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      max-width: 1420px;
+      margin: auto;
+      padding: 24px 22px 8px;
+      position: relative;
+    }
+
+    h1 {
+      margin: 0 0 7px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.02;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      max-width: 900px;
+      line-height: 1.5;
+    }
+
+    .language-picker {
+      position: absolute;
+      top: 24px;
+      right: 22px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .language-picker select {
+      width: auto;
+      color: var(--text);
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-weight: 800;
+      outline: none;
+    }
+
+    @media (max-width: 760px) {
+      .language-picker {
+        position: static;
+        margin-top: 14px;
+        justify-content: flex-start;
+      }
+    }
+
+    main {
+      max-width: 1420px;
+      margin: auto;
+      padding: 14px 22px 32px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(330px, .75fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      main { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: rgba(21, 25, 31, .9);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, .28);
+      backdrop-filter: blur(12px);
+    }
+
+    .stack { display: grid; gap: 14px; }
+
+    .section-title,
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 8px;
+      font-weight: 800;
+    }
+
+    .section-title { margin-top: 2px; }
+
+    textarea,
+    input {
+      width: 100%;
+      color: var(--text);
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 13px;
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 14px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 178px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(85, 199, 247, .13);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    @media (max-width: 760px) {
+      .two { grid-template-columns: 1fr; }
+      .row { grid-template-columns: 1fr; }
+    }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+    }
+
+    .options label {
+      margin: 0;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel2);
+      font-weight: 600;
+      justify-content: flex-start;
+      cursor: pointer;
+    }
+
+    .options input { width: auto; }
+
+    button {
+      min-height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: var(--panel3);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      border-color: transparent;
+    }
+
+    .btn-soft {
+      background: rgba(85, 199, 247, .1);
+      border-color: rgba(85, 199, 247, .28);
+    }
+
+    .icon-btn {
+      width: 42px;
+      min-width: 42px;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+      font-size: 17px;
+      line-height: 1;
+    }
+
+    .status {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+    }
+
+    .status.ok {
+      background: rgba(34, 197, 94, .12);
+      color: var(--ok);
+      border: 1px solid rgba(34, 197, 94, .25);
+    }
+
+    .status.bad {
+      background: rgba(248, 113, 113, .12);
+      color: var(--bad);
+      border: 1px solid rgba(248, 113, 113, .25);
+    }
+
+    .status.warn {
+      background: rgba(253, 230, 138, .11);
+      color: var(--warn);
+      border: 1px solid rgba(253, 230, 138, .22);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    @media (max-width: 760px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    .stat {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel2);
+      padding: 10px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .highlight {
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.75;
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 13px;
+      min-height: 132px;
+      font-family: "Cascadia Code", Consolas, monospace;
+      font-size: 14px;
+    }
+
+    mark {
+      background: rgba(85, 199, 247, .22);
+      color: var(--text);
+      border: 1px solid rgba(85, 199, 247, .38);
+      border-radius: 6px;
+      padding: 1px 3px;
+    }
+
+    .preview {
+      display: grid;
+      gap: 8px;
+      max-height: 460px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .rename-row,
+    .match-item {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      font-family: "Cascadia Code", Consolas, monospace;
+      color: var(--muted);
+    }
+
+    .rename-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr) auto;
+      gap: 9px;
+      align-items: center;
+    }
+
+    @media (max-width: 760px) {
+      .rename-row { grid-template-columns: 1fr; }
+      .arrow { display: none; }
+    }
+
+    .old-name,
+    .new-name {
+      overflow-wrap: anywhere;
+    }
+
+    .new-name { color: var(--text); }
+    .arrow { color: var(--accent); text-align: center; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 92px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 6px 8px;
+      font-family: Inter, system-ui, sans-serif;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .pill.ok { color: var(--ok); border-color: rgba(134, 239, 172, .34); }
+    .pill.warn { color: var(--warn); border-color: rgba(253, 230, 138, .34); }
+    .pill.bad { color: var(--bad); border-color: rgba(252, 165, 165, .34); }
+    .pill.info { color: var(--info); border-color: rgba(191, 219, 254, .34); }
+
+    .match-list,
+    .chips,
+    .help-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .chips {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+
+    .chip {
+      width: 100%;
+      min-height: 44px;
+      height: auto;
+      padding: 8px 10px;
+      background: #111827;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.25;
+      text-align: left;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      hyphens: auto;
+    }
+
+    .chip-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 24px;
+      gap: 4px;
+      align-items: stretch;
+    }
+
+    .delete-chip {
+      min-height: 44px;
+      min-width: 24px;
+      padding: 0;
+      text-align: center;
+      color: var(--bad);
+      background: rgba(248, 113, 113, .08);
+      border-color: rgba(248, 113, 113, .24);
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .chip:hover {
+      color: var(--text);
+      border-color: var(--accent);
+    }
+
+    .chip.active {
+      color: var(--text);
+      border-color: var(--accent);
+      background: rgba(85, 199, 247, .16);
+    }
+
+    details {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px;
+      background: rgba(15, 19, 24, .76);
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    code {
+      color: var(--accent);
+    }
+
+    .help-grid { margin-top: 10px; }
+
+    .help-line {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 8px;
+      color: var(--muted);
+      align-items: start;
+    }
+
+    .help-line code {
+      font-family: "Cascadia Code", Consolas, monospace;
+      background: #0b1220;
+      padding: 4px 7px;
+      border-radius: 6px;
+      color: var(--warn);
+      overflow-wrap: anywhere;
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Regex Forge</h1>
+    <div class="subtitle" data-i18n="subtitle">
+      Atelier local pour préparer des renommages par expression régulière : colle une liste de fichiers,
+      teste ton motif, choisis un remplacement, puis vérifie les nouveaux noms avant de lancer quoi que ce soit ailleurs.
+    </div>
+    <label class="language-picker" for="languageSelect">
+      <span data-i18n="language">Langue</span>
+      <select id="languageSelect">
+        <option value="fr">FR</option>
+        <option value="bg">BG</option>
+      </select>
+    </label>
+  </header>
+
+  <main>
+    <section class="stack">
+      <div class="panel">
+        <label for="sample"><span data-i18n="filesLabel">Fichiers ou texte à traiter</span> <span class="small" id="lineCount"></span></label>
+        <textarea id="sample">Nom de la Série S01E02.mkv
+Nom de la Série S02E15 MULTI 1080p.mkv
+Film exemple (2024).mkv
+image_2026-04-25.jpg</textarea>
+      </div>
+
+      <div class="panel stack">
+        <div class="two">
+          <div>
+            <label for="regex" data-i18n="regexLabel">Expression régulière</label>
+            <div class="row">
+              <input id="regex" value="(.+) S(\d{2})E(\d{2})(.*)\.(mkv|mp4|avi)$" />
+              <button class="btn-soft icon-btn" id="saveScenario" data-title-i18n="saveScenarioTip">💾</button>
+              <button class="btn-soft" id="copyRegex" data-i18n="copy" data-title-i18n="copyRegexTip">Copier</button>
+            </div>
+          </div>
+
+          <div>
+            <label for="replace" data-i18n="replacementLabel">Remplacement</label>
+            <div class="row">
+              <input id="replace" value="$1 - Saison $2 Episode $3.$5" />
+              <button class="btn-soft icon-btn" id="saveReplacement" data-title-i18n="saveReplacementTip">💾</button>
+              <button class="btn-soft" id="copyReplacement" data-i18n="copy" data-title-i18n="copyReplacementTip">Copier</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="options">
+          <label><input type="checkbox" id="flagG" /> <span data-i18n="global">global</span></label>
+          <label><input type="checkbox" id="flagI" checked /> <span data-i18n="ignoreCase">ignorer la casse</span></label>
+          <label><input type="checkbox" id="flagM" checked /> <span data-i18n="multiline">multi-lignes</span></label>
+          <label><input type="checkbox" id="trimLines" checked /> <span data-i18n="ignoreEmpty">ignorer lignes vides</span></label>
+        </div>
+
+        <div id="status" class="status ok"></div>
+
+        <div class="stats">
+          <div class="stat"><strong id="statLines">0</strong><span data-i18n="statLines">Lignes</span></div>
+          <div class="stat"><strong id="statChanged">0</strong><span data-i18n="statChanged">Modifiées</span></div>
+          <div class="stat"><strong id="statUnchanged">0</strong><span data-i18n="statUnchanged">Inchangées</span></div>
+          <div class="stat"><strong id="statWarnings">0</strong><span data-i18n="statWarnings">Alertes</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title" data-i18n="renamePreview">Aperçu de renommage</div>
+        <div id="renamePreview" class="preview"></div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title" data-i18n="visualResult">Résultat visuel</div>
+        <div id="highlight" class="highlight"></div>
+      </div>
+
+      <div class="panel">
+        <div class="section-title" data-i18n="matches">Correspondances</div>
+        <div id="matches" class="match-list"></div>
+      </div>
+    </section>
+
+    <aside class="stack">
+      <div class="panel stack">
+        <div class="section-title" data-i18n="actions">Actions</div>
+        <div class="actions">
+          <button class="btn-accent" id="copyRenamed" data-i18n="copyModified" data-title-i18n="copyModifiedTip">Copier modifiés</button>
+          <button id="downloadCsv" data-i18n="exportModified" data-title-i18n="exportModifiedTip">Exporter modifiés</button>
+          <button id="resetLibrary" data-i18n="resetBlocks" data-title-i18n="resetBlocksTip">Reset blocs</button>
+          <button id="resetSample" data-i18n="example" data-title-i18n="exampleTip">Exemple</button>
+        </div>
+      </div>
+
+      <div class="panel stack">
+        <div class="section-title" data-i18n="regexBlocks">Blocs regex</div>
+        <div class="chips" id="chips"></div>
+      </div>
+
+      <div class="panel stack">
+        <div class="section-title" data-i18n="replacementBlocks">Blocs remplacement</div>
+        <div class="chips" id="replacementChips"></div>
+      </div>
+
+      <details class="panel" open>
+        <summary data-i18n="readyScenarios">Scénarios prêts à l'emploi</summary>
+        <div class="chips" id="examples"></div>
+      </details>
+
+      <details class="panel" open>
+        <summary data-i18n="simpleExplanation">Explication simple</summary>
+        <div id="explain" class="help-grid"></div>
+      </details>
+
+      <details class="panel">
+        <summary data-i18n="beginnerHelp">Aide-mémoire débutant</summary>
+        <div class="help-grid">
+          <div class="help-line"><code>.</code><span data-i18n="helpAnyChar">n'importe quel caractère</span></div>
+          <div class="help-line"><code>\d</code><span data-i18n="helpDigit">un chiffre</span></div>
+          <div class="help-line"><code>\w</code><span data-i18n="helpWord">lettre, chiffre ou underscore</span></div>
+          <div class="help-line"><code>\s</code><span data-i18n="helpSpace">espace, tabulation, retour ligne</span></div>
+          <div class="help-line"><code>+</code><span data-i18n="helpPlus">une ou plusieurs fois</span></div>
+          <div class="help-line"><code>*</code><span data-i18n="helpStar">zéro ou plusieurs fois</span></div>
+          <div class="help-line"><code>?</code><span data-i18n="helpOptional">optionnel</span></div>
+          <div class="help-line"><code>{2}</code><span data-i18n="helpExact">exactement 2 fois</span></div>
+          <div class="help-line"><code>[abc]</code><span data-i18n="helpChoice">a, b ou c</span></div>
+          <div class="help-line"><code>[^abc]</code><span data-i18n="helpExcept">tout sauf a, b ou c</span></div>
+          <div class="help-line"><code>(...)</code><span data-i18n="helpGroup">groupe capturé, réutilisable avec $1, $2...</span></div>
+          <div class="help-line"><code>^</code><span data-i18n="helpStart">début de ligne</span></div>
+          <div class="help-line"><code>$</code><span data-i18n="helpEnd">fin de ligne</span></div>
+        </div>
+      </details>
+    </aside>
+  </main>
+
+  <script>
+    const sample = document.getElementById("sample");
+    const regexInput = document.getElementById("regex");
+    const replaceInput = document.getElementById("replace");
+    const flagG = document.getElementById("flagG");
+    const flagI = document.getElementById("flagI");
+    const flagM = document.getElementById("flagM");
+    const trimLines = document.getElementById("trimLines");
+    const status = document.getElementById("status");
+    const highlight = document.getElementById("highlight");
+    const matches = document.getElementById("matches");
+    const explain = document.getElementById("explain");
+    const chips = document.getElementById("chips");
+    const replacementChips = document.getElementById("replacementChips");
+    const examples = document.getElementById("examples");
+    const renamePreview = document.getElementById("renamePreview");
+    const lineCount = document.getElementById("lineCount");
+    const statLines = document.getElementById("statLines");
+    const statChanged = document.getElementById("statChanged");
+    const statUnchanged = document.getElementById("statUnchanged");
+    const statWarnings = document.getElementById("statWarnings");
+    const languageSelect = document.getElementById("languageSelect");
+
+    const initialSample = sample.value;
+    const storageKeys = {
+      examples: "regexForge.examples.v1",
+      replacements: "regexForge.replacements.v1",
+      language: "regexForge.language.v1"
+    };
+    let currentRows = [];
+    let titleCaseEnabled = false;
+    let currentLang = ["fr", "bg"].includes(localStorage.getItem(storageKeys.language))
+      ? localStorage.getItem(storageKeys.language)
+      : "fr";
+
+    const i18n = {
+      fr: {
+        subtitle: "Atelier local pour préparer des renommages par expression régulière : colle une liste de fichiers, teste ton motif, choisis un remplacement, puis vérifie les nouveaux noms avant de lancer quoi que ce soit ailleurs.",
+        language: "Langue",
+        filesLabel: "Fichiers ou texte à traiter",
+        regexLabel: "Expression régulière",
+        replacementLabel: "Remplacement",
+        copy: "Copier",
+        global: "global",
+        ignoreCase: "ignorer la casse",
+        multiline: "multi-lignes",
+        ignoreEmpty: "ignorer lignes vides",
+        statLines: "Lignes",
+        statChanged: "Modifiées",
+        statUnchanged: "Inchangées",
+        statWarnings: "Alertes",
+        renamePreview: "Aperçu de renommage",
+        visualResult: "Résultat visuel",
+        matches: "Correspondances",
+        actions: "Actions",
+        copyModified: "Copier modifiés",
+        exportModified: "Exporter modifiés",
+        resetBlocks: "Reset blocs",
+        example: "Exemple",
+        regexBlocks: "Blocs regex",
+        replacementBlocks: "Blocs remplacement",
+        readyScenarios: "Scénarios prêts à l'emploi",
+        simpleExplanation: "Explication simple",
+        beginnerHelp: "Aide-mémoire débutant",
+        saveScenarioTip: "Ajoute la regex et le remplacement actuels dans les scénarios prêts à l'emploi.",
+        saveReplacementTip: "Ajoute le remplacement actuel dans les blocs de remplacement.",
+        copyRegexTip: "Copie l'expression régulière actuelle.",
+        copyReplacementTip: "Copie le remplacement actuel.",
+        copyModifiedTip: "Copie uniquement les nouveaux noms dont le statut est modifié.",
+        exportModifiedTip: "Exporte uniquement les nouveaux noms modifiés dans un fichier texte.",
+        resetBlocksTip: "Réinitialise les blocs de remplacement et les scénarios prêts à l'emploi avec la configuration d'usine.",
+        exampleTip: "Remet la liste d'exemple dans la zone de fichiers ou texte à traiter.",
+        deleteTip: "Supprime ce bloc. Il peut être réinitialisé en cliquant sur Reset blocs.",
+        validInitial: "Regex valide.",
+        invalidRegex: "Regex invalide : {message}",
+        fixRegex: "Corrige la regex pour calculer l'aperçu.",
+        validWithWarnings: "Regex valide, mais {count} alerte(s) dans l'aperçu.",
+        validMatches: "Regex valide. {count} correspondance(s) trouvée(s).",
+        noLines: "Aucune ligne à traiter.",
+        noMatch: "Aucune correspondance.",
+        noKnownBlock: "Aucun bloc reconnu pour le moment.",
+        lineCount: "{count} ligne(s)",
+        groupLabel: "Groupe {index}:",
+        titleCaseOn: "Capitalisation activée sur les nouveaux noms.",
+        titleCaseOff: "Capitalisation désactivée.",
+        replacementDeleted: "Bloc de remplacement supprimé.",
+        scenarioDeleted: "Scénario supprimé.",
+        scenarioPrompt: "Nom du scénario à enregistrer",
+        scenarioFallback: "Mon scénario",
+        replacementPrompt: "Nom du bloc de remplacement",
+        replacementFallback: "Mon remplacement",
+        scenarioSaved: "Scénario enregistré.",
+        replacementSaved: "Bloc de remplacement enregistré.",
+        resetConfirm: "Réinitialiser les scénarios et blocs de remplacement par défaut ?",
+        resetDone: "Blocs et scénarios réinitialisés.",
+        regexCopied: "Regex copiée.",
+        replacementCopied: "Remplacement copié.",
+        modifiedCopied: "Noms modifiés copiés.",
+        nothingToCopy: "Aucun nom modifié à copier.",
+        exportedCount: "{count} nom(s) modifié(s) exporté(s).",
+        nothingToExport: "Aucun nom modifié à exporter.",
+        statusEmpty: "vide",
+        statusDuplicate: "doublon",
+        statusNotFound: "non trouvé",
+        statusSame: "identique",
+        statusModified: "modifié",
+        quickDigit: "chiffre",
+        quickTwoDigits: "2 chiffres",
+        quickFullName: "nom complet",
+        quickText: "texte",
+        quickSpace: "espace",
+        quickAnything: "n'importe quoi",
+        quickGroup: "groupe",
+        quickQuotedGroup: "groupe entre guillemets",
+        quickOptional: "optionnel",
+        quickStart: "début ligne",
+        quickEnd: "fin ligne",
+        quickDot: "point réel",
+        quickVideoExt: "extension vidéo",
+        quickYear: "année",
+        quickIsoDate: "date ISO",
+        replSeasonEpisode: "saison/épisode",
+        replTitleCase: "Mots en Majuscules",
+        replFrenchDate: "date FR",
+        replKeepExt: "extension gardée",
+        exEpisode: "S01E02 propre",
+        exRemoveMulti: "retirer MULTI",
+        exMovieYear: "film année",
+        exIsoToFr: "date ISO vers FR",
+        exUnderscore: "underscore en espace",
+        exBeforeExt: "avant extension",
+        explainDigit: "chiffre de 0 à 9",
+        explainWord: "lettre, chiffre ou underscore",
+        explainSpace: "espace ou retour ligne",
+        explainEscapedDot: "un vrai point",
+        explainDot: "n'importe quel caractère",
+        explainPlus: "une ou plusieurs répétitions",
+        explainStar: "zéro ou plusieurs répétitions",
+        explainOptional: "élément optionnel",
+        explainRepeat: "nombre de répétitions",
+        explainGroup: "groupe capturé",
+        explainClass: "choix parmi plusieurs caractères",
+        explainOr: "ou logique",
+        explainStart: "début de ligne",
+        explainEnd: "fin de ligne",
+        helpAnyChar: "n'importe quel caractère",
+        helpDigit: "un chiffre",
+        helpWord: "lettre, chiffre ou underscore",
+        helpSpace: "espace, tabulation, retour ligne",
+        helpPlus: "une ou plusieurs fois",
+        helpStar: "zéro ou plusieurs fois",
+        helpOptional: "optionnel",
+        helpExact: "exactement 2 fois",
+        helpChoice: "a, b ou c",
+        helpExcept: "tout sauf a, b ou c",
+        helpGroup: "groupe capturé, réutilisable avec $1, $2...",
+        helpStart: "début de ligne",
+        helpEnd: "fin de ligne"
+      },
+      bg: {
+        subtitle: "Локален инструмент за подготовка на преименуване с регулярни изрази: постави списък с файлове, тествай шаблона, избери замяна и провери новите имена, преди да правиш промени другаде.",
+        language: "Език",
+        filesLabel: "Файлове или текст за обработка",
+        regexLabel: "Регулярен израз",
+        replacementLabel: "Замяна",
+        copy: "Копирай",
+        global: "глобално",
+        ignoreCase: "без разлика малки/главни",
+        multiline: "много редове",
+        ignoreEmpty: "игнорирай празни редове",
+        statLines: "Редове",
+        statChanged: "Променени",
+        statUnchanged: "Без промяна",
+        statWarnings: "Предупреждения",
+        renamePreview: "Преглед на преименуването",
+        visualResult: "Визуален резултат",
+        matches: "Съвпадения",
+        actions: "Действия",
+        copyModified: "Копирай променените",
+        exportModified: "Експортирай променените",
+        resetBlocks: "Нулирай блоковете",
+        example: "Пример",
+        regexBlocks: "Regex блокове",
+        replacementBlocks: "Блокове за замяна",
+        readyScenarios: "Готови сценарии",
+        simpleExplanation: "Кратко обяснение",
+        beginnerHelp: "Помощ за начинаещи",
+        saveScenarioTip: "Добавя текущия regex и замяната към готовите сценарии.",
+        saveReplacementTip: "Добавя текущата замяна към блоковете за замяна.",
+        copyRegexTip: "Копира текущия регулярен израз.",
+        copyReplacementTip: "Копира текущата замяна.",
+        copyModifiedTip: "Копира само новите имена със статус променено.",
+        exportModifiedTip: "Експортира само променените нови имена в текстов файл.",
+        resetBlocksTip: "Връща блоковете за замяна и готовите сценарии към фабричната конфигурация.",
+        exampleTip: "Връща примерния списък в полето за файлове или текст.",
+        deleteTip: "Изтрива този блок. Може да бъде върнат чрез Нулирай блоковете.",
+        validInitial: "Regex е валиден.",
+        invalidRegex: "Невалиден regex: {message}",
+        fixRegex: "Поправи regex, за да се изчисли прегледът.",
+        validWithWarnings: "Regex е валиден, но има {count} предупреждение(я) в прегледа.",
+        validMatches: "Regex е валиден. Намерени съвпадения: {count}.",
+        noLines: "Няма редове за обработка.",
+        noMatch: "Няма съвпадения.",
+        noKnownBlock: "Засега няма разпознат блок.",
+        lineCount: "{count} ред(а)",
+        groupLabel: "Група {index}:",
+        titleCaseOn: "Главни първи букви са активирани за новите имена.",
+        titleCaseOff: "Главни първи букви са изключени.",
+        replacementDeleted: "Блокът за замяна е изтрит.",
+        scenarioDeleted: "Сценарият е изтрит.",
+        scenarioPrompt: "Име на сценария за запазване",
+        scenarioFallback: "Моят сценарий",
+        replacementPrompt: "Име на блока за замяна",
+        replacementFallback: "Моята замяна",
+        scenarioSaved: "Сценарият е запазен.",
+        replacementSaved: "Блокът за замяна е запазен.",
+        resetConfirm: "Да се нулират ли сценариите и блоковете за замяна към настройките по подразбиране?",
+        resetDone: "Блоковете и сценариите са нулирани.",
+        regexCopied: "Regex е копиран.",
+        replacementCopied: "Замяната е копирана.",
+        modifiedCopied: "Променените имена са копирани.",
+        nothingToCopy: "Няма променено име за копиране.",
+        exportedCount: "Експортирани променени имена: {count}.",
+        nothingToExport: "Няма променено име за експортиране.",
+        statusEmpty: "празно",
+        statusDuplicate: "дубликат",
+        statusNotFound: "не е намерено",
+        statusSame: "същото",
+        statusModified: "променено",
+        quickDigit: "цифра",
+        quickTwoDigits: "2 цифри",
+        quickFullName: "пълно име",
+        quickText: "текст",
+        quickSpace: "интервал",
+        quickAnything: "каквото и да е",
+        quickGroup: "група",
+        quickQuotedGroup: "група в кавички",
+        quickOptional: "по избор",
+        quickStart: "начало на ред",
+        quickEnd: "край на ред",
+        quickDot: "истинска точка",
+        quickVideoExt: "видео разширение",
+        quickYear: "година",
+        quickIsoDate: "ISO дата",
+        replSeasonEpisode: "сезон/епизод",
+        replTitleCase: "Главни Първи Букви",
+        replFrenchDate: "френска дата",
+        replKeepExt: "запази разширението",
+        exEpisode: "S01E02 подредено",
+        exRemoveMulti: "премахни MULTI",
+        exMovieYear: "филм година",
+        exIsoToFr: "ISO дата към FR",
+        exUnderscore: "underscore към интервал",
+        exBeforeExt: "преди разширение",
+        explainDigit: "цифра от 0 до 9",
+        explainWord: "буква, цифра или underscore",
+        explainSpace: "интервал или нов ред",
+        explainEscapedDot: "истинска точка",
+        explainDot: "който и да е символ",
+        explainPlus: "едно или повече повторения",
+        explainStar: "нула или повече повторения",
+        explainOptional: "елемент по избор",
+        explainRepeat: "брой повторения",
+        explainGroup: "захваната група",
+        explainClass: "избор измежду няколко символа",
+        explainOr: "логическо или",
+        explainStart: "начало на ред",
+        explainEnd: "край на ред",
+        helpAnyChar: "който и да е символ",
+        helpDigit: "една цифра",
+        helpWord: "буква, цифра или underscore",
+        helpSpace: "интервал, табулация, нов ред",
+        helpPlus: "един или повече пъти",
+        helpStar: "нула или повече пъти",
+        helpOptional: "по избор",
+        helpExact: "точно 2 пъти",
+        helpChoice: "a, b или c",
+        helpExcept: "всичко освен a, b или c",
+        helpGroup: "захваната група, използва се с $1, $2...",
+        helpStart: "начало на ред",
+        helpEnd: "край на ред"
+      }
+    };
+
+    const quickBlocks = [
+      { labelKey: "quickDigit", value: "\\d" },
+      { labelKey: "quickTwoDigits", value: "\\d{2}" },
+      { labelKey: "quickFullName", value: "^(.+)\\.[^.]+$" },
+      { labelKey: "quickText", value: "[A-Za-zÀ-ÿ]+" },
+      { labelKey: "quickSpace", value: "\\s+" },
+      { labelKey: "quickAnything", value: ".*" },
+      { labelKey: "quickGroup", value: "()" },
+      { labelKey: "quickQuotedGroup", value: "\"([^\"]+)\"" },
+      { labelKey: "quickOptional", value: "?" },
+      { labelKey: "quickStart", value: "^" },
+      { labelKey: "quickEnd", value: "$" },
+      { labelKey: "quickDot", value: "\\." },
+      { labelKey: "quickVideoExt", value: "\\.(mkv|mp4|avi)$" },
+      { labelKey: "quickYear", value: "\\((\\d{4})\\)" },
+      { labelKey: "quickIsoDate", value: "(\\d{4})-(\\d{2})-(\\d{2})" }
+    ];
+
+    const defaultReplacementBlocks = [
+      { label: "$1", value: "$1" },
+      { label: "$2", value: "$2" },
+      { label: "$3", value: "$3" },
+      { labelKey: "replSeasonEpisode", value: "Saison $1 Episode $2" },
+      { labelKey: "replTitleCase", action: "titleCase" },
+      { labelKey: "replFrenchDate", value: "$3-$2-$1" },
+      { labelKey: "replKeepExt", value: ".$1" }
+    ];
+
+    const defaultExampleBlocks = [
+      {
+        labelKey: "exEpisode",
+        regex: "(.+) S(\\d{2})E(\\d{2})(.*)\\.(mkv|mp4|avi)$",
+        replacement: "$1 - Saison $2 Episode $3.$5"
+      },
+      {
+        labelKey: "exRemoveMulti",
+        regex: "\\sMULTI\\s?",
+        replacement: " "
+      },
+      {
+        labelKey: "exMovieYear",
+        regex: "^(.+) \\((\\d{4})\\)\\.(mkv|mp4|avi)$",
+        replacement: "$1 [$2].$3"
+      },
+      {
+        labelKey: "exIsoToFr",
+        regex: "(\\d{4})-(\\d{2})-(\\d{2})",
+        replacement: "$3-$2-$1"
+      },
+      {
+        labelKey: "exUnderscore",
+        regex: "_+",
+        replacement: " "
+      },
+      {
+        labelKey: "exBeforeExt",
+        regex: "^(.+)\\.([^.]+)$",
+        replacement: "$1.cleaned.$2"
+      }
+    ];
+
+    let replacementBlocks = loadBlocks(storageKeys.replacements, defaultReplacementBlocks);
+    let exampleBlocks = loadBlocks(storageKeys.examples, defaultExampleBlocks);
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, ch => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[ch]));
+    }
+
+    function t(key, vars = {}) {
+      const text = i18n[currentLang]?.[key] ?? i18n.fr[key] ?? key;
+      return Object.entries(vars).reduce((value, [name, replacement]) => (
+        value.replaceAll(`{${name}}`, replacement)
+      ), text);
+    }
+
+    function blockLabel(block) {
+      return block.labelKey ? t(block.labelKey) : block.label;
+    }
+
+    function applyI18n() {
+      document.documentElement.lang = currentLang;
+      languageSelect.value = currentLang;
+      document.querySelectorAll("[data-i18n]").forEach(node => {
+        node.textContent = t(node.dataset.i18n);
+      });
+      document.querySelectorAll("[data-title-i18n]").forEach(node => {
+        node.title = t(node.dataset.titleI18n);
+      });
+      renderLibrary();
+      update();
+    }
+
+    function loadBlocks(key, defaults) {
+      try {
+        const saved = JSON.parse(localStorage.getItem(key));
+        return Array.isArray(saved) ? saved : cloneBlocks(defaults);
+      } catch {
+        return cloneBlocks(defaults);
+      }
+    }
+
+    function cloneBlocks(blocks) {
+      return JSON.parse(JSON.stringify(blocks));
+    }
+
+    function saveBlocks(key, blocks) {
+      localStorage.setItem(key, JSON.stringify(blocks));
+    }
+
+    function makeLabel(value, fallback) {
+      const clean = value.trim();
+      if (!clean) return fallback;
+      return clean.length > 28 ? `${clean.slice(0, 25)}...` : clean;
+    }
+
+    function askLabel(message, fallback) {
+      const answer = window.prompt(message, fallback);
+      return answer === null ? "" : makeLabel(answer, fallback);
+    }
+
+    function getFlags(forceGlobal = false) {
+      const flags = `${flagG.checked || forceGlobal ? "g" : ""}${flagI.checked ? "i" : ""}${flagM.checked ? "m" : ""}`;
+      return [...new Set(flags)].join("");
+    }
+
+    function getLines() {
+      const raw = sample.value.split(/\r?\n/);
+      return trimLines.checked ? raw.map(x => x.trim()).filter(Boolean) : raw;
+    }
+
+    function makeRegex(forceGlobal = false) {
+      return new RegExp(regexInput.value, getFlags(forceGlobal));
+    }
+
+    function explainRegex(pattern) {
+      const explanations = [
+        [/\\d/g, "\\d", "explainDigit"],
+        [/\\w/g, "\\w", "explainWord"],
+        [/\\s/g, "\\s", "explainSpace"],
+        [/\\\./g, "\\.", "explainEscapedDot"],
+        [/\./g, ".", "explainDot"],
+        [/\+/g, "+", "explainPlus"],
+        [/\*/g, "*", "explainStar"],
+        [/\?/g, "?", "explainOptional"],
+        [/\{\d+(,\d*)?\}/g, "{n}", "explainRepeat"],
+        [/\([^)]+\)/g, "(...)", "explainGroup"],
+        [/\[[^\]]+\]/g, "[...]", "explainClass"],
+        [/\|/g, "|", "explainOr"],
+        [/\^/g, "^", "explainStart"],
+        [/\$/g, "$", "explainEnd"]
+      ];
+
+      const found = [];
+      for (const [re, symbol, text] of explanations) {
+        re.lastIndex = 0;
+        if (re.test(pattern)) found.push({ symbol, text: t(text) });
+      }
+
+      explain.innerHTML = found.length
+        ? found.map(x => `<div class="help-line"><code>${escapeHtml(x.symbol)}</code><span>${x.text}</span></div>`).join("")
+        : `<div class="small">${t("noKnownBlock")}</div>`;
+    }
+
+    function classifyRows(rows) {
+      const counts = new Map();
+      rows.forEach(row => counts.set(row.next, (counts.get(row.next) || 0) + 1));
+
+      return rows.map(row => {
+        if (!row.next.trim()) return { ...row, state: "bad", labelKey: "statusEmpty" };
+        if (counts.get(row.next) > 1) return { ...row, state: "bad", labelKey: "statusDuplicate" };
+        if (!row.matched) return { ...row, state: "info", labelKey: "statusNotFound" };
+        if (row.original === row.next) return { ...row, state: "warn", labelKey: "statusSame" };
+        return { ...row, state: "ok", labelKey: "statusModified" };
+      });
+    }
+
+    function buildRenamePreview(re) {
+      const lines = getLines();
+      const replacement = replaceInput.value;
+      const rows = lines.map((line, index) => {
+        const testRe = new RegExp(regexInput.value, getFlags(false));
+        const matched = testRe.test(line);
+        const replaceRe = new RegExp(regexInput.value, getFlags(flagG.checked));
+        const next = line.replace(replaceRe, replacement);
+        return {
+          index,
+          original: line,
+          next: titleCaseEnabled ? titleCaseWords(next) : next,
+          matched
+        };
+      });
+
+      return classifyRows(rows);
+    }
+
+    function getModifiedRows() {
+      return currentRows.filter(row => row.state === "ok");
+    }
+
+    function titleCaseWords(value) {
+      const locale = currentLang === "bg" ? "bg-BG" : "fr-FR";
+      return value.replace(/[A-Za-zÀ-ÖØ-öø-ÿ\u0400-\u04FF]+(?:['-][A-Za-zÀ-ÖØ-öø-ÿ\u0400-\u04FF]+)*/g, word => (
+        word.charAt(0).toLocaleUpperCase(locale) + word.slice(1).toLocaleLowerCase(locale)
+      ));
+    }
+
+    function renderRenamePreview(rows) {
+      currentRows = rows;
+      renamePreview.innerHTML = rows.length
+        ? rows.map(row => `
+          <div class="rename-row">
+            <div class="old-name">${escapeHtml(row.original)}</div>
+            <div class="arrow">→</div>
+            <div class="new-name">${escapeHtml(row.next)}</div>
+            <span class="pill ${row.state}">${t(row.labelKey)}</span>
+          </div>
+        `).join("")
+        : `<div class="match-item">${t("noLines")}</div>`;
+
+      const changed = rows.filter(row => row.state === "ok").length;
+      const unchanged = rows.filter(row => row.state === "warn" || row.state === "info").length;
+      const warnings = rows.filter(row => row.state === "bad").length;
+
+      statLines.textContent = rows.length;
+      statChanged.textContent = changed;
+      statUnchanged.textContent = unchanged;
+      statWarnings.textContent = warnings;
+      lineCount.textContent = t("lineCount", { count: rows.length });
+    }
+
+    function renderMatches(scanRe, text) {
+      let resultHtml = "";
+      let lastIndex = 0;
+      let count = 0;
+      let matchHtml = "";
+      let match;
+
+      while ((match = scanRe.exec(text)) !== null) {
+        if (match[0] === "") {
+          scanRe.lastIndex++;
+          continue;
+        }
+
+        count++;
+        resultHtml += escapeHtml(text.slice(lastIndex, match.index));
+        resultHtml += `<mark>${escapeHtml(match[0])}</mark>`;
+        lastIndex = match.index + match[0].length;
+
+        const groups = match.slice(1)
+          .map((g, i) => `${t("groupLabel", { index: i + 1 })} <strong>${escapeHtml(g ?? "")}</strong>`)
+          .join(" | ");
+        matchHtml += `<div class="match-item">#${count} : <strong>${escapeHtml(match[0])}</strong>${groups ? "<br>" + groups : ""}</div>`;
+
+        if (!flagG.checked) break;
+      }
+
+      resultHtml += escapeHtml(text.slice(lastIndex));
+      highlight.innerHTML = resultHtml || escapeHtml(text);
+      matches.innerHTML = count ? matchHtml : `<div class="match-item">${t("noMatch")}</div>`;
+      return count;
+    }
+
+    function update() {
+      const text = sample.value;
+      const pattern = regexInput.value;
+      let re;
+
+      try {
+        re = makeRegex();
+      } catch (err) {
+        status.className = "status bad";
+        status.textContent = t("invalidRegex", { message: err.message });
+        highlight.textContent = text;
+        matches.innerHTML = "";
+        renamePreview.innerHTML = `<div class="match-item">${t("fixRegex")}</div>`;
+        explainRegex(pattern);
+        return;
+      }
+
+      const rows = buildRenamePreview(re);
+      const matchCount = renderMatches(makeRegex(true), text);
+      renderRenamePreview(rows);
+      explainRegex(pattern);
+
+      const errors = rows.filter(row => row.state === "bad").length;
+      if (errors) {
+        status.className = "status warn";
+        status.textContent = t("validWithWarnings", { count: errors });
+      } else {
+        status.className = "status ok";
+        status.textContent = t("validMatches", { count: matchCount });
+      }
+    }
+
+    function insertAtCursor(input, value) {
+      const start = input.selectionStart;
+      const end = input.selectionEnd;
+      input.value = input.value.slice(0, start) + value + input.value.slice(end);
+      input.focus();
+      input.selectionStart = input.selectionEnd = start + value.length;
+      update();
+    }
+
+    async function copyText(value, message) {
+      await navigator.clipboard.writeText(value);
+      status.className = "status ok";
+      status.textContent = message;
+    }
+
+    function csvEscape(value) {
+      return `"${String(value).replaceAll('"', '""')}"`;
+    }
+
+    function clearNode(node) {
+      while (node.firstChild) node.removeChild(node.firstChild);
+    }
+
+    function addChip(container, block, onClick, onDelete) {
+      const btn = document.createElement("button");
+      btn.className = "chip";
+      btn.textContent = blockLabel(block);
+      btn.title = block.value || block.regex || block.replacement || "";
+      btn.onclick = onClick;
+
+      if (!onDelete) {
+        container.appendChild(btn);
+        return btn;
+      }
+
+      const shell = document.createElement("div");
+      shell.className = "chip-shell";
+      const del = document.createElement("button");
+      del.className = "delete-chip";
+      del.textContent = "🗑";
+      del.title = t("deleteTip");
+      del.onclick = event => {
+        event.stopPropagation();
+        onDelete();
+      };
+      shell.append(btn, del);
+      container.appendChild(shell);
+      return btn;
+    }
+
+    function renderQuickBlocks() {
+      clearNode(chips);
+      quickBlocks.forEach(block => {
+        addChip(chips, block, () => insertAtCursor(regexInput, block.value));
+      });
+    }
+
+    function renderReplacementBlocks() {
+      clearNode(replacementChips);
+      replacementBlocks.forEach((block, index) => {
+        const btn = addChip(
+          replacementChips,
+          block,
+          () => {
+            if (block.action === "titleCase") {
+              titleCaseEnabled = !titleCaseEnabled;
+              btn.classList.toggle("active", titleCaseEnabled);
+              status.className = "status ok";
+              status.textContent = titleCaseEnabled
+                ? t("titleCaseOn")
+                : t("titleCaseOff");
+              update();
+              return;
+            }
+            insertAtCursor(replaceInput, block.value);
+          },
+          () => {
+            replacementBlocks.splice(index, 1);
+            saveBlocks(storageKeys.replacements, replacementBlocks);
+            renderReplacementBlocks();
+            status.className = "status ok";
+            status.textContent = t("replacementDeleted");
+          }
+        );
+
+        if (block.action === "titleCase" && titleCaseEnabled) btn.classList.add("active");
+      });
+    }
+
+    function renderExampleBlocks() {
+      clearNode(examples);
+      exampleBlocks.forEach((block, index) => {
+        addChip(
+          examples,
+          block,
+          () => {
+            regexInput.value = block.regex;
+            replaceInput.value = block.replacement;
+            update();
+          },
+          () => {
+            exampleBlocks.splice(index, 1);
+            saveBlocks(storageKeys.examples, exampleBlocks);
+            renderExampleBlocks();
+            status.className = "status ok";
+            status.textContent = t("scenarioDeleted");
+          }
+        );
+      });
+    }
+
+    function renderLibrary() {
+      renderQuickBlocks();
+      renderReplacementBlocks();
+      renderExampleBlocks();
+    }
+
+    document.getElementById("copyRegex").onclick = () => copyText(regexInput.value, t("regexCopied"));
+    document.getElementById("copyReplacement").onclick = () => copyText(replaceInput.value, t("replacementCopied"));
+    document.getElementById("saveScenario").onclick = () => {
+      const label = askLabel(t("scenarioPrompt"), makeLabel(regexInput.value, t("scenarioFallback")));
+      if (!label) return;
+      exampleBlocks.push({
+        label,
+        regex: regexInput.value,
+        replacement: replaceInput.value
+      });
+      saveBlocks(storageKeys.examples, exampleBlocks);
+      renderExampleBlocks();
+      status.className = "status ok";
+      status.textContent = t("scenarioSaved");
+    };
+    document.getElementById("saveReplacement").onclick = () => {
+      const label = askLabel(t("replacementPrompt"), makeLabel(replaceInput.value, t("replacementFallback")));
+      if (!label) return;
+      replacementBlocks.push({
+        label,
+        value: replaceInput.value
+      });
+      saveBlocks(storageKeys.replacements, replacementBlocks);
+      renderReplacementBlocks();
+      status.className = "status ok";
+      status.textContent = t("replacementSaved");
+    };
+    document.getElementById("resetLibrary").onclick = () => {
+      if (!window.confirm(t("resetConfirm"))) return;
+      localStorage.removeItem(storageKeys.examples);
+      localStorage.removeItem(storageKeys.replacements);
+      exampleBlocks = cloneBlocks(defaultExampleBlocks);
+      replacementBlocks = cloneBlocks(defaultReplacementBlocks);
+      titleCaseEnabled = false;
+      renderLibrary();
+      update();
+      status.className = "status ok";
+      status.textContent = t("resetDone");
+    };
+    document.getElementById("copyRenamed").onclick = () => {
+      const renamed = getModifiedRows().map(row => row.next).join("\n");
+      copyText(renamed, renamed ? t("modifiedCopied") : t("nothingToCopy"));
+    };
+    document.getElementById("downloadCsv").onclick = () => {
+      const modifiedRows = getModifiedRows();
+      const body = modifiedRows.map(row => row.next);
+      const blob = new Blob([body.join("\n")], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "regex-forge-noms-modifies.txt";
+      link.click();
+      URL.revokeObjectURL(url);
+      status.className = "status ok";
+      status.textContent = modifiedRows.length
+        ? t("exportedCount", { count: modifiedRows.length })
+        : t("nothingToExport");
+    };
+    document.getElementById("resetSample").onclick = () => {
+      sample.value = initialSample;
+      update();
+    };
+    languageSelect.onchange = () => {
+      currentLang = languageSelect.value;
+      localStorage.setItem(storageKeys.language, currentLang);
+      applyI18n();
+    };
+
+    [sample, regexInput, replaceInput, flagG, flagI, flagM, trimLines].forEach(el => el.addEventListener("input", update));
+    applyI18n();
+  </script>
+</body>
+</html>
