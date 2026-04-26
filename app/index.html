@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Regex Forge</title>
+  <link rel="icon" type="image/png" href="assets/regex-forge-icon.png" />
+  <link rel="apple-touch-icon" href="assets/regex-forge-icon.png" />
   <style>
     :root {
       --bg: #0b0d10;
@@ -45,6 +47,14 @@
       margin: 0 0 7px;
       font-size: clamp(28px, 4vw, 44px);
       line-height: 1.02;
+    }
+
+    .brand-logo {
+      display: block;
+      width: min(220px, 52vw);
+      height: auto;
+      margin: -14px 0 0;
+      object-fit: contain;
     }
 
     .subtitle {
@@ -446,6 +456,51 @@
       overflow-wrap: anywhere;
     }
 
+    .learning-examples {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .learning-example {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .learning-example summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .lesson-body {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .lesson-line {
+      display: grid;
+      gap: 4px;
+    }
+
+    .lesson-line strong {
+      color: var(--text);
+      font-family: Inter, system-ui, sans-serif;
+    }
+
+    .lesson-line code {
+      display: block;
+      white-space: pre-wrap;
+      color: var(--warn);
+    }
+
     .small {
       font-size: 13px;
       color: var(--muted);
@@ -462,7 +517,9 @@
 </head>
 <body>
   <header>
-    <h1>Regex Forge</h1>
+    <h1>
+      <img class="brand-logo" src="assets/regex-forge-icon.png" alt="Regex Forge" />
+    </h1>
     <div class="subtitle" data-i18n="subtitle">
       Atelier local pour préparer des renommages par expression régulière : colle une liste de fichiers,
       teste ton motif, choisis un remplacement, puis vérifie les nouveaux noms avant de lancer quoi que ce soit ailleurs.
@@ -574,10 +631,17 @@ image_2026-04-25.jpg</textarea>
       <details class="panel">
         <summary data-i18n="beginnerHelp">Aide-mémoire débutant</summary>
         <div class="help-grid">
-          <div class="help-line"><code>.</code><span data-i18n="helpAnyChar">n'importe quel caractère</span></div>
+          <div class="help-line"><code>.</code><span data-i18n="helpAnyChar">n'importe quel caractère sauf saut de ligne</span></div>
+          <div class="help-line"><code>[\s\S]*</code><span data-i18n="helpAnyIncludingLineBreaks">tout matcher, même sur plusieurs lignes</span></div>
           <div class="help-line"><code>\d</code><span data-i18n="helpDigit">un chiffre</span></div>
+          <div class="help-line"><code>\D</code><span data-i18n="helpNotDigit">tout sauf un chiffre</span></div>
           <div class="help-line"><code>\w</code><span data-i18n="helpWord">lettre, chiffre ou underscore</span></div>
+          <div class="help-line"><code>\W</code><span data-i18n="helpNotWord">tout sauf lettre, chiffre ou underscore</span></div>
           <div class="help-line"><code>\s</code><span data-i18n="helpSpace">espace, tabulation, retour ligne</span></div>
+          <div class="help-line"><code>\S</code><span data-i18n="helpNotSpace">tout sauf espace, tabulation ou retour ligne</span></div>
+          <div class="help-line"><code>\n</code><span data-i18n="helpNewline">saut de ligne</span></div>
+          <div class="help-line"><code>\r</code><span data-i18n="helpCarriageReturn">retour chariot Windows</span></div>
+          <div class="help-line"><code>\t</code><span data-i18n="helpTab">tabulation</span></div>
           <div class="help-line"><code>+</code><span data-i18n="helpPlus">une ou plusieurs fois</span></div>
           <div class="help-line"><code>*</code><span data-i18n="helpStar">zéro ou plusieurs fois</span></div>
           <div class="help-line"><code>?</code><span data-i18n="helpOptional">optionnel</span></div>
@@ -585,9 +649,25 @@ image_2026-04-25.jpg</textarea>
           <div class="help-line"><code>[abc]</code><span data-i18n="helpChoice">a, b ou c</span></div>
           <div class="help-line"><code>[^abc]</code><span data-i18n="helpExcept">tout sauf a, b ou c</span></div>
           <div class="help-line"><code>(...)</code><span data-i18n="helpGroup">groupe capturé, réutilisable avec $1, $2...</span></div>
-          <div class="help-line"><code>^</code><span data-i18n="helpStart">début de ligne</span></div>
-          <div class="help-line"><code>$</code><span data-i18n="helpEnd">fin de ligne</span></div>
+          <div class="help-line"><code>(?:...)</code><span data-i18n="helpNonCapturingGroup">groupe non capturant, non réutilisé en $1</span></div>
+          <div class="help-line"><code>(?=...)</code><span data-i18n="helpLookahead">vérifie ce qui suit sans le capturer</span></div>
+          <div class="help-line"><code>(?!...)</code><span data-i18n="helpNegativeLookahead">vérifie que ce qui suit n'est pas présent</span></div>
+          <div class="help-line"><code>(?&lt;=...)</code><span data-i18n="helpLookbehind">vérifie ce qui précède sans le capturer</span></div>
+          <div class="help-line"><code>(?&lt;!...)</code><span data-i18n="helpNegativeLookbehind">vérifie que ce qui précède n'est pas présent</span></div>
+          <div class="help-line"><code>\b</code><span data-i18n="helpWordBoundary">frontière de mot, ex: \btest\b</span></div>
+          <div class="help-line"><code>|</code><span data-i18n="helpAlternative">ou logique, ex: (mkv|mp4|avi)</span></div>
+          <div class="help-line"><code>\.</code><span data-i18n="helpEscapedDot">point réel</span></div>
+          <div class="help-line"><code>\(</code><span data-i18n="helpEscapedParen">parenthèse réelle</span></div>
+          <div class="help-line"><code>\[</code><span data-i18n="helpEscapedBracket">crochet réel</span></div>
+          <div class="help-line"><code>^</code><span data-i18n="helpStart">début de texte, ou début de ligne avec l'option multi-lignes</span></div>
+          <div class="help-line"><code>$</code><span data-i18n="helpEnd">fin de texte, ou fin de ligne avec l'option multi-lignes</span></div>
+          <div class="help-line"><code>s</code><span data-i18n="helpDotAllLimit">flag dotall non disponible ici : utilise [\s\S] pour inclure les sauts de ligne</span></div>
         </div>
+      </details>
+
+      <details class="panel" open>
+        <summary data-i18n="concreteExamples">Exemples concrets</summary>
+        <div class="learning-examples" id="learningExamples"></div>
       </details>
     </aside>
   </main>
@@ -607,6 +687,7 @@ image_2026-04-25.jpg</textarea>
     const chips = document.getElementById("chips");
     const replacementChips = document.getElementById("replacementChips");
     const examples = document.getElementById("examples");
+    const learningExamplesNode = document.getElementById("learningExamples");
     const renamePreview = document.getElementById("renamePreview");
     const lineCount = document.getElementById("lineCount");
     const statLines = document.getElementById("statLines");
@@ -615,7 +696,6 @@ image_2026-04-25.jpg</textarea>
     const statWarnings = document.getElementById("statWarnings");
     const languageSelect = document.getElementById("languageSelect");
 
-    const initialSample = sample.value;
     const storageKeys = {
       examples: "regexForge.examples.v1",
       replacements: "regexForge.replacements.v1",
@@ -626,6 +706,12 @@ image_2026-04-25.jpg</textarea>
     let currentLang = ["fr", "bg"].includes(localStorage.getItem(storageKeys.language))
       ? localStorage.getItem(storageKeys.language)
       : "fr";
+    const defaultSamples = {
+      fr: "Nom de la Série S01E02.mkv\nNom de la Série S02E15 MULTI 1080p.mkv\nFilm exemple (2024).mkv\nimage_2026-04-25.jpg",
+      bg: "Име на сериала S01E02.mkv\nИме на сериала S02E15 MULTI 1080p.mkv\nПримерен филм (2024).mkv\nснимка_2026-04-25.jpg"
+    };
+    const initialSample = defaultSamples.fr;
+    sample.value = defaultSamples[currentLang] || initialSample;
 
     const i18n = {
       fr: {
@@ -656,6 +742,17 @@ image_2026-04-25.jpg</textarea>
         readyScenarios: "Scénarios prêts à l'emploi",
         simpleExplanation: "Explication simple",
         beginnerHelp: "Aide-mémoire débutant",
+        concreteExamples: "Exemples concrets",
+        lessonGoal: "But",
+        lessonText: "Texte",
+        lessonRegex: "Recherche",
+        lessonReplacement: "Remplacement",
+        lessonResult: "Résultat",
+        lessonNote: "Note",
+        lessonTrap: "Piège",
+        loadExample: "Charger",
+        exampleLoaded: "Exemple chargé.",
+        emptyReplacement: "vide",
         saveScenarioTip: "Ajoute la regex et le remplacement actuels dans les scénarios prêts à l'emploi.",
         saveReplacementTip: "Ajoute le remplacement actuel dans les blocs de remplacement.",
         copyRegexTip: "Copie l'expression régulière actuelle.",
@@ -704,6 +801,7 @@ image_2026-04-25.jpg</textarea>
         quickText: "texte",
         quickSpace: "espace",
         quickAnything: "n'importe quoi",
+        quickAnyLine: "tout, même lignes",
         quickGroup: "groupe",
         quickQuotedGroup: "groupe entre guillemets",
         quickOptional: "optionnel",
@@ -723,9 +821,17 @@ image_2026-04-25.jpg</textarea>
         exIsoToFr: "date ISO vers FR",
         exUnderscore: "underscore en espace",
         exBeforeExt: "avant extension",
+        exAnyLine: "tout matcher",
         explainDigit: "chiffre de 0 à 9",
+        explainNotDigit: "tout sauf un chiffre",
         explainWord: "lettre, chiffre ou underscore",
+        explainNotWord: "tout sauf lettre, chiffre ou underscore",
         explainSpace: "espace ou retour ligne",
+        explainNotSpace: "tout sauf espace ou retour ligne",
+        explainNewline: "saut de ligne",
+        explainCarriageReturn: "retour chariot",
+        explainTab: "tabulation",
+        explainAnyIncludingLineBreaks: "tout, y compris les sauts de ligne",
         explainEscapedDot: "un vrai point",
         explainDot: "n'importe quel caractère",
         explainPlus: "une ou plusieurs répétitions",
@@ -733,14 +839,27 @@ image_2026-04-25.jpg</textarea>
         explainOptional: "élément optionnel",
         explainRepeat: "nombre de répétitions",
         explainGroup: "groupe capturé",
+        explainNonCapturingGroup: "groupe non capturant",
+        explainLookahead: "condition sur ce qui suit",
+        explainNegativeLookahead: "condition négative sur ce qui suit",
+        explainLookbehind: "condition sur ce qui précède",
+        explainNegativeLookbehind: "condition négative sur ce qui précède",
+        explainWordBoundary: "frontière de mot",
         explainClass: "choix parmi plusieurs caractères",
         explainOr: "ou logique",
         explainStart: "début de ligne",
         explainEnd: "fin de ligne",
-        helpAnyChar: "n'importe quel caractère",
+        helpAnyChar: "n'importe quel caractère sauf saut de ligne",
+        helpAnyIncludingLineBreaks: "tout matcher, même sur plusieurs lignes",
         helpDigit: "un chiffre",
+        helpNotDigit: "tout sauf un chiffre",
         helpWord: "lettre, chiffre ou underscore",
+        helpNotWord: "tout sauf lettre, chiffre ou underscore",
         helpSpace: "espace, tabulation, retour ligne",
+        helpNotSpace: "tout sauf espace, tabulation ou retour ligne",
+        helpNewline: "saut de ligne",
+        helpCarriageReturn: "retour chariot Windows",
+        helpTab: "tabulation",
         helpPlus: "une ou plusieurs fois",
         helpStar: "zéro ou plusieurs fois",
         helpOptional: "optionnel",
@@ -748,8 +867,19 @@ image_2026-04-25.jpg</textarea>
         helpChoice: "a, b ou c",
         helpExcept: "tout sauf a, b ou c",
         helpGroup: "groupe capturé, réutilisable avec $1, $2...",
-        helpStart: "début de ligne",
-        helpEnd: "fin de ligne"
+        helpNonCapturingGroup: "groupe non capturant, non réutilisé en $1",
+        helpLookahead: "vérifie ce qui suit sans le capturer",
+        helpNegativeLookahead: "vérifie que ce qui suit n'est pas présent",
+        helpLookbehind: "vérifie ce qui précède sans le capturer",
+        helpNegativeLookbehind: "vérifie que ce qui précède n'est pas présent",
+        helpWordBoundary: "frontière de mot, ex: \\btest\\b",
+        helpAlternative: "ou logique, ex: (mkv|mp4|avi)",
+        helpEscapedDot: "point réel",
+        helpEscapedParen: "parenthèse réelle",
+        helpEscapedBracket: "crochet réel",
+        helpStart: "début de texte, ou début de ligne avec l'option multi-lignes",
+        helpEnd: "fin de texte, ou fin de ligne avec l'option multi-lignes",
+        helpDotAllLimit: "flag dotall non disponible ici : utilise [\\s\\S] pour inclure les sauts de ligne"
       },
       bg: {
         subtitle: "Локален инструмент за подготовка на преименуване с регулярни изрази: постави списък с файлове, тествай шаблона, избери замяна и провери новите имена, преди да правиш промени другаде.",
@@ -779,6 +909,17 @@ image_2026-04-25.jpg</textarea>
         readyScenarios: "Готови сценарии",
         simpleExplanation: "Кратко обяснение",
         beginnerHelp: "Помощ за начинаещи",
+        concreteExamples: "Практически примери",
+        lessonGoal: "Цел",
+        lessonText: "Текст",
+        lessonRegex: "Търсене",
+        lessonReplacement: "Замяна",
+        lessonResult: "Резултат",
+        lessonNote: "Бележка",
+        lessonTrap: "Капан",
+        loadExample: "Зареди",
+        exampleLoaded: "Примерът е зареден.",
+        emptyReplacement: "празно",
         saveScenarioTip: "Добавя текущия regex и замяната към готовите сценарии.",
         saveReplacementTip: "Добавя текущата замяна към блоковете за замяна.",
         copyRegexTip: "Копира текущия регулярен израз.",
@@ -827,6 +968,7 @@ image_2026-04-25.jpg</textarea>
         quickText: "текст",
         quickSpace: "интервал",
         quickAnything: "каквото и да е",
+        quickAnyLine: "всичко, и редове",
         quickGroup: "група",
         quickQuotedGroup: "група в кавички",
         quickOptional: "по избор",
@@ -846,9 +988,17 @@ image_2026-04-25.jpg</textarea>
         exIsoToFr: "ISO дата към FR",
         exUnderscore: "underscore към интервал",
         exBeforeExt: "преди разширение",
+        exAnyLine: "съвпадение на всичко",
         explainDigit: "цифра от 0 до 9",
+        explainNotDigit: "всичко освен цифра",
         explainWord: "буква, цифра или underscore",
+        explainNotWord: "всичко освен буква, цифра или underscore",
         explainSpace: "интервал или нов ред",
+        explainNotSpace: "всичко освен интервал или нов ред",
+        explainNewline: "нов ред",
+        explainCarriageReturn: "carriage return",
+        explainTab: "табулация",
+        explainAnyIncludingLineBreaks: "всичко, включително нови редове",
         explainEscapedDot: "истинска точка",
         explainDot: "който и да е символ",
         explainPlus: "едно или повече повторения",
@@ -856,14 +1006,27 @@ image_2026-04-25.jpg</textarea>
         explainOptional: "елемент по избор",
         explainRepeat: "брой повторения",
         explainGroup: "захваната група",
+        explainNonCapturingGroup: "незахващаща група",
+        explainLookahead: "условие за следващия текст",
+        explainNegativeLookahead: "отрицателно условие за следващия текст",
+        explainLookbehind: "условие за предишния текст",
+        explainNegativeLookbehind: "отрицателно условие за предишния текст",
+        explainWordBoundary: "граница на дума",
         explainClass: "избор измежду няколко символа",
         explainOr: "логическо или",
         explainStart: "начало на ред",
         explainEnd: "край на ред",
-        helpAnyChar: "който и да е символ",
+        helpAnyChar: "който и да е символ освен нов ред",
+        helpAnyIncludingLineBreaks: "съвпадение на всичко, дори на няколко реда",
         helpDigit: "една цифра",
+        helpNotDigit: "всичко освен цифра",
         helpWord: "буква, цифра или underscore",
+        helpNotWord: "всичко освен буква, цифра или underscore",
         helpSpace: "интервал, табулация, нов ред",
+        helpNotSpace: "всичко освен интервал, табулация или нов ред",
+        helpNewline: "нов ред",
+        helpCarriageReturn: "carriage return в Windows",
+        helpTab: "табулация",
         helpPlus: "един или повече пъти",
         helpStar: "нула или повече пъти",
         helpOptional: "по избор",
@@ -871,8 +1034,19 @@ image_2026-04-25.jpg</textarea>
         helpChoice: "a, b или c",
         helpExcept: "всичко освен a, b или c",
         helpGroup: "захваната група, използва се с $1, $2...",
-        helpStart: "начало на ред",
-        helpEnd: "край на ред"
+        helpNonCapturingGroup: "незахващаща група, не се използва като $1",
+        helpLookahead: "проверява какво следва, без да го захваща",
+        helpNegativeLookahead: "проверява, че следващият текст не присъства",
+        helpLookbehind: "проверява какво стои преди, без да го захваща",
+        helpNegativeLookbehind: "проверява, че предишният текст не присъства",
+        helpWordBoundary: "граница на дума, напр. \\btest\\b",
+        helpAlternative: "логическо или, напр. (mkv|mp4|avi)",
+        helpEscapedDot: "истинска точка",
+        helpEscapedParen: "истинска скоба",
+        helpEscapedBracket: "истинска квадратна скоба",
+        helpStart: "начало на текст, или начало на ред с опцията за много редове",
+        helpEnd: "край на текст, или край на ред с опцията за много редове",
+        helpDotAllLimit: "dotall флагът не е наличен тук: използвай [\\s\\S], за да включиш нови редове"
       }
     };
 
@@ -883,6 +1057,7 @@ image_2026-04-25.jpg</textarea>
       { labelKey: "quickText", value: "[A-Za-zÀ-ÿ]+" },
       { labelKey: "quickSpace", value: "\\s+" },
       { labelKey: "quickAnything", value: ".*" },
+      { labelKey: "quickAnyLine", value: "[\\s\\S]*" },
       { labelKey: "quickGroup", value: "()" },
       { labelKey: "quickQuotedGroup", value: "\"([^\"]+)\"" },
       { labelKey: "quickOptional", value: "?" },
@@ -898,7 +1073,7 @@ image_2026-04-25.jpg</textarea>
       { label: "$1", value: "$1" },
       { label: "$2", value: "$2" },
       { label: "$3", value: "$3" },
-      { labelKey: "replSeasonEpisode", value: "Saison $1 Episode $2" },
+      { labelKey: "replSeasonEpisode", value: { fr: "Saison $1 Episode $2", bg: "Сезон $1 Епизод $2" } },
       { labelKey: "replTitleCase", action: "titleCase" },
       { labelKey: "replFrenchDate", value: "$3-$2-$1" },
       { labelKey: "replKeepExt", value: ".$1" }
@@ -908,7 +1083,7 @@ image_2026-04-25.jpg</textarea>
       {
         labelKey: "exEpisode",
         regex: "(.+) S(\\d{2})E(\\d{2})(.*)\\.(mkv|mp4|avi)$",
-        replacement: "$1 - Saison $2 Episode $3.$5"
+        replacement: { fr: "$1 - Saison $2 Episode $3.$5", bg: "$1 - Сезон $2 Епизод $3.$5" }
       },
       {
         labelKey: "exRemoveMulti",
@@ -918,7 +1093,7 @@ image_2026-04-25.jpg</textarea>
       {
         labelKey: "exMovieYear",
         regex: "^(.+) \\((\\d{4})\\)\\.(mkv|mp4|avi)$",
-        replacement: "$1 [$2].$3"
+        replacement: { fr: "$1 [$2].$3", bg: "$1 [$2].$3" }
       },
       {
         labelKey: "exIsoToFr",
@@ -933,7 +1108,307 @@ image_2026-04-25.jpg</textarea>
       {
         labelKey: "exBeforeExt",
         regex: "^(.+)\\.([^.]+)$",
-        replacement: "$1.cleaned.$2"
+        replacement: { fr: "$1.cleaned.$2", bg: "$1.почистен.$2" }
+      },
+      {
+        labelKey: "exAnyLine",
+        regex: "[\\s\\S]*",
+        replacement: "$&"
+      }
+    ];
+
+    const learningExamples = [
+      {
+        title: {
+          fr: "Groupe non capturant (?:...)",
+          bg: "Незахващаща група (?:...)"
+        },
+        goal: {
+          fr: "Trouver mkv ou mp4 sans créer de groupe récupérable inutile.",
+          bg: "Намери mkv или mp4, без да създаваш излишна група за повторно използване."
+        },
+        sample: {
+          fr: "film.mkv\nvideo.mp4\narchive.zip",
+          bg: "филм.mkv\nвидео.mp4\nархив.zip"
+        },
+        regex: "\\.(?:mkv|mp4)",
+        replacement: {
+          fr: "[VIDEO]",
+          bg: "[ВИДЕО]"
+        },
+        result: {
+          fr: "film[VIDEO]\nvideo[VIDEO]\narchive.zip",
+          bg: "филм[ВИДЕО]\nвидео[ВИДЕО]\nархив.zip"
+        },
+        note: {
+          fr: "(mkv|mp4) crée un groupe. (?:mkv|mp4) regroupe sans ajouter $1.",
+          bg: "(mkv|mp4) създава група. (?:mkv|mp4) групира, без да добавя $1."
+        }
+      },
+      {
+        title: {
+          fr: "Lookahead positif (?=...)",
+          bg: "Положителен lookahead (?=...)"
+        },
+        goal: {
+          fr: "Remplacer les nombres seulement s'ils sont suivis de €.",
+          bg: "Замени числата само ако са последвани от €."
+        },
+        sample: {
+          fr: "10€ 20$ 30€",
+          bg: "10€ 20$ 30€"
+        },
+        regex: "\\d+(?=€)",
+        replacement: {
+          fr: "[PRIX]",
+          bg: "[ЦЕНА]"
+        },
+        result: {
+          fr: "[PRIX]€ 20$ [PRIX]€",
+          bg: "[ЦЕНА]€ 20$ [ЦЕНА]€"
+        },
+        note: {
+          fr: "Le € reste dans le texte : il est vérifié, mais pas consommé.",
+          bg: "Символът € остава в текста: проверява се, но не се консумира."
+        }
+      },
+      {
+        title: {
+          fr: "Lookahead négatif (?!...)",
+          bg: "Отрицателен lookahead (?!...)"
+        },
+        goal: {
+          fr: "Trouver les fichiers sauf les .txt.",
+          bg: "Намери файловете, но без .txt."
+        },
+        sample: {
+          fr: "file.txt file.mkv file.mp4",
+          bg: "file.txt file.mkv file.mp4"
+        },
+        regex: "\\w+\\.(?!txt)\\w+",
+        replacement: {
+          fr: "[OK]",
+          bg: "[ГОТОВО]"
+        },
+        result: {
+          fr: "file.txt [OK] [OK]",
+          bg: "file.txt [ГОТОВО] [ГОТОВО]"
+        },
+        note: {
+          fr: "Après le point, (?!txt) refuse les extensions qui commencent par txt.",
+          bg: "След точката (?!txt) отказва разширенията, които започват с txt."
+        }
+      },
+      {
+        title: {
+          fr: "Lookbehind positif (?<=...)",
+          bg: "Положителен lookbehind (?<=...)"
+        },
+        goal: {
+          fr: "Récupérer le nombre seulement après \"Saison \".",
+          bg: "Вземи числото само след \"Сезон \"."
+        },
+        sample: {
+          fr: "Saison 1 Saison 2 Episode 3",
+          bg: "Сезон 1 Сезон 2 Епизод 3"
+        },
+        regex: {
+          fr: "(?<=Saison )\\d+",
+          bg: "(?<=Сезон )\\d+"
+        },
+        replacement: "[X]",
+        result: {
+          fr: "Saison [X] Saison [X] Episode 3",
+          bg: "Сезон [X] Сезон [X] Епизод 3"
+        },
+        note: {
+          fr: "\"Saison \" est vérifié avant le nombre, mais reste dans le texte.",
+          bg: "\"Сезон \" се проверява преди числото, но остава в текста."
+        }
+      },
+      {
+        title: {
+          fr: "Lookbehind négatif (?<!...)",
+          bg: "Отрицателен lookbehind (?<!...)"
+        },
+        goal: {
+          fr: "Remplacer les nombres sauf ceux précédés de $.",
+          bg: "Замени числата, освен тези, които са предшествани от $."
+        },
+        sample: {
+          fr: "$10 20 $30 40",
+          bg: "$10 20 $30 40"
+        },
+        regex: "(?<!\\$)\\d+",
+        replacement: "[X]",
+        result: {
+          fr: "$10 [X] $30 [X]",
+          bg: "$10 [X] $30 [X]"
+        },
+        note: {
+          fr: "Le nombre est refusé si le caractère juste avant est $.",
+          bg: "Числото се отказва, ако символът точно преди него е $."
+        }
+      },
+      {
+        title: {
+          fr: "Frontière de mot \\b",
+          bg: "Граница на дума \\b"
+        },
+        goal: {
+          fr: "Trouver le mot test, mais pas testing ni test123.",
+          bg: "Намери думата test, но не testing или test123."
+        },
+        sample: {
+          fr: "test testing test123 test",
+          bg: "test testing test123 test"
+        },
+        regex: "\\btest\\b",
+        replacement: "[X]",
+        result: {
+          fr: "[X] testing test123 [X]",
+          bg: "[X] testing test123 [X]"
+        },
+        note: {
+          fr: "\\b marque une limite entre mot et non-mot.",
+          bg: "\\b маркира граница между дума и не-дума."
+        }
+      },
+      {
+        title: {
+          fr: "Alternative |",
+          bg: "Алтернатива |"
+        },
+        goal: {
+          fr: "Trouver chat ou chien.",
+          bg: "Намери котка или куче."
+        },
+        sample: {
+          fr: "chat chien oiseau",
+          bg: "котка куче птица"
+        },
+        regex: {
+          fr: "chat|chien",
+          bg: "котка|куче"
+        },
+        replacement: "[X]",
+        result: {
+          fr: "[X] [X] oiseau",
+          bg: "[X] [X] птица"
+        },
+        note: {
+          fr: "Pour limiter l'alternative à une zone, utilise souvent un groupe : (mkv|mp4|avi).",
+          bg: "За да ограничиш алтернативата до зона, често използвай група: (mkv|mp4|avi)."
+        }
+      },
+      {
+        title: {
+          fr: "Tout matcher, même sur plusieurs lignes",
+          bg: "Съвпадение на всичко, дори на няколко реда"
+        },
+        goal: {
+          fr: "Capturer un texte entier avec ses retours à la ligne.",
+          bg: "Захвани цял текст заедно с новите редове."
+        },
+        sample: {
+          fr: "ligne 1\nligne 2\nligne 3",
+          bg: "ред 1\nред 2\nред 3"
+        },
+        regex: "[\\s\\S]+",
+        replacement: "[X]",
+        result: "[X]",
+        note: {
+          fr: "En JavaScript, . ne match pas les sauts de ligne. [\\s\\S] contourne cette limite.",
+          bg: "В JavaScript . не съвпада с нови редове. [\\s\\S] заобикаля това ограничение."
+        }
+      },
+      {
+        title: {
+          fr: "Cas NAS / séries S02E15",
+          bg: "NAS / сериали S02E15"
+        },
+        goal: {
+          fr: "Récupérer saison et épisode dans S02E15.",
+          bg: "Вземи сезона и епизода от S02E15."
+        },
+        sample: {
+          fr: "S02E15",
+          bg: "S02E15"
+        },
+        regex: "S(\\d{2})E(\\d{2})",
+        replacement: {
+          fr: "Saison $1 Episode $2",
+          bg: "Сезон $1 Епизод $2"
+        },
+        result: {
+          fr: "Saison 02 Episode 15",
+          bg: "Сезон 02 Епизод 15"
+        },
+        note: {
+          fr: "$1 reprend la saison, $2 reprend l'épisode.",
+          bg: "$1 взема сезона, $2 взема епизода."
+        }
+      },
+      {
+        title: {
+          fr: "Bloc multi-lignes entre START et END",
+          bg: "Блок на няколко реда между START и END"
+        },
+        goal: {
+          fr: "Supprimer uniquement un bloc précis sur plusieurs lignes.",
+          bg: "Премахни само конкретен блок на няколко реда."
+        },
+        sample: {
+          fr: "Intro\nSTART\nligne 1\nligne 2\nligne 3\nEND\nConclusion",
+          bg: "Въведение\nНАЧАЛО\nред 1\nред 2\nред 3\nКРАЙ\nЗаключение"
+        },
+        regex: {
+          fr: "START[\\s\\S]*?END",
+          bg: "НАЧАЛО[\\s\\S]*?КРАЙ"
+        },
+        replacement: {
+          fr: "[BLOC SUPPRIMÉ]",
+          bg: "[БЛОКЪТ Е ПРЕМАХНАТ]"
+        },
+        result: {
+          fr: "Intro\n[BLOC SUPPRIMÉ]\nConclusion",
+          bg: "Въведение\n[БЛОКЪТ Е ПРЕМАХНАТ]\nЗаключение"
+        },
+        note: {
+          fr: "*? est non gourmand : il s'arrête au premier END possible.",
+          bg: "*? е нежаден режим: спира при първия възможен КРАЙ."
+        },
+        trap: {
+          fr: "Sans le ?, START[\\s\\S]*END peut avaler plusieurs blocs d'un coup.",
+          bg: "Без ?, НАЧАЛО[\\s\\S]*КРАЙ може да погълне няколко блока наведнъж."
+        }
+      },
+      {
+        title: {
+          fr: "Nettoyer un bloc de logs",
+          bg: "Почистване на блок с логове"
+        },
+        goal: {
+          fr: "Retirer un bloc DEBUG sur plusieurs lignes.",
+          bg: "Премахни DEBUG блок на няколко реда."
+        },
+        sample: {
+          fr: "Film.mkv\nDEBUG START\nloading codec\nerror line\nDEBUG END\nS02E05.mkv",
+          bg: "Филм.mkv\nDEBUG НАЧАЛО\nзареждане на кодек\nред с грешка\nDEBUG КРАЙ\nS02E05.mkv"
+        },
+        regex: {
+          fr: "DEBUG START[\\s\\S]*?DEBUG END\\n?",
+          bg: "DEBUG НАЧАЛО[\\s\\S]*?DEBUG КРАЙ\\n?"
+        },
+        replacement: "",
+        result: {
+          fr: "Film.mkv\nS02E05.mkv",
+          bg: "Филм.mkv\nS02E05.mkv"
+        },
+        note: {
+          fr: "\\n? retire aussi le retour ligne final si présent.",
+          bg: "\\n? премахва и последния нов ред, ако присъства."
+        }
       }
     ];
 
@@ -955,6 +1430,13 @@ image_2026-04-25.jpg</textarea>
       return Object.entries(vars).reduce((value, [name, replacement]) => (
         value.replaceAll(`{${name}}`, replacement)
       ), text);
+    }
+
+    function localText(value) {
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        return value[currentLang] ?? value.fr ?? "";
+      }
+      return value ?? "";
     }
 
     function blockLabel(block) {
@@ -1018,10 +1500,25 @@ image_2026-04-25.jpg</textarea>
 
     function explainRegex(pattern) {
       const explanations = [
+        [/\[\\s\\S\]\*/g, "[\\s\\S]*", "explainAnyIncludingLineBreaks"],
         [/\\d/g, "\\d", "explainDigit"],
+        [/\\D/g, "\\D", "explainNotDigit"],
         [/\\w/g, "\\w", "explainWord"],
+        [/\\W/g, "\\W", "explainNotWord"],
         [/\\s/g, "\\s", "explainSpace"],
+        [/\\S/g, "\\S", "explainNotSpace"],
+        [/\\n/g, "\\n", "explainNewline"],
+        [/\\r/g, "\\r", "explainCarriageReturn"],
+        [/\\t/g, "\\t", "explainTab"],
         [/\\\./g, "\\.", "explainEscapedDot"],
+        [/\\\(/g, "\\(", "helpEscapedParen"],
+        [/\\\[/g, "\\[", "helpEscapedBracket"],
+        [/\(\?:[^)]*\)/g, "(?:...)", "explainNonCapturingGroup"],
+        [/\(\?=[^)]*\)/g, "(?=...)", "explainLookahead"],
+        [/\(\?![^)]*\)/g, "(?!...)", "explainNegativeLookahead"],
+        [/\(\?<=.+?\)/g, "(?<=...)", "explainLookbehind"],
+        [/\(\?<!.*?\)/g, "(?<!...)", "explainNegativeLookbehind"],
+        [/\\b/g, "\\b", "explainWordBoundary"],
         [/\./g, ".", "explainDot"],
         [/\+/g, "+", "explainPlus"],
         [/\*/g, "*", "explainStar"],
@@ -1203,7 +1700,7 @@ image_2026-04-25.jpg</textarea>
       const btn = document.createElement("button");
       btn.className = "chip";
       btn.textContent = blockLabel(block);
-      btn.title = block.value || block.regex || block.replacement || "";
+      btn.title = localText(block.value) || localText(block.regex) || localText(block.replacement) || "";
       btn.onclick = onClick;
 
       if (!onDelete) {
@@ -1224,6 +1721,47 @@ image_2026-04-25.jpg</textarea>
       shell.append(btn, del);
       container.appendChild(shell);
       return btn;
+    }
+
+    function renderLearningExamples() {
+      learningExamplesNode.innerHTML = learningExamples.map((item, index) => `
+        <details class="learning-example">
+          <summary>
+            <span>${escapeHtml(localText(item.title))}</span>
+            <button type="button" class="btn-soft" data-learning-index="${index}">${t("loadExample")}</button>
+          </summary>
+          <div class="lesson-body">
+            <div class="lesson-line"><strong>${t("lessonGoal")}</strong><span>${escapeHtml(localText(item.goal))}</span></div>
+            <div class="lesson-line"><strong>${t("lessonText")}</strong><code>${escapeHtml(localText(item.sample))}</code></div>
+            <div class="lesson-line"><strong>${t("lessonRegex")}</strong><code>${escapeHtml(localText(item.regex))}</code></div>
+            <div class="lesson-line"><strong>${t("lessonReplacement")}</strong><code>${escapeHtml(localText(item.replacement) || t("emptyReplacement"))}</code></div>
+            <div class="lesson-line"><strong>${t("lessonResult")}</strong><code>${escapeHtml(localText(item.result))}</code></div>
+            ${localText(item.note) ? `<div class="lesson-line"><strong>${t("lessonNote")}</strong><span>${escapeHtml(localText(item.note))}</span></div>` : ""}
+            ${localText(item.trap) ? `<div class="lesson-line"><strong>${t("lessonTrap")}</strong><span>${escapeHtml(localText(item.trap))}</span></div>` : ""}
+          </div>
+        </details>
+      `).join("");
+
+      learningExamplesNode.querySelectorAll("[data-learning-index]").forEach(button => {
+        button.onclick = event => {
+          event.preventDefault();
+          event.stopPropagation();
+          applyLearningExample(Number(button.dataset.learningIndex));
+        };
+      });
+    }
+
+    function applyLearningExample(index) {
+      const item = learningExamples[index];
+      if (!item) return;
+      sample.value = localText(item.sample);
+      regexInput.value = localText(item.regex);
+      replaceInput.value = localText(item.replacement);
+      flagG.checked = true;
+      trimLines.checked = false;
+      update();
+      status.className = "status ok";
+      status.textContent = t("exampleLoaded");
     }
 
     function renderQuickBlocks() {
@@ -1250,7 +1788,7 @@ image_2026-04-25.jpg</textarea>
               update();
               return;
             }
-            insertAtCursor(replaceInput, block.value);
+            insertAtCursor(replaceInput, localText(block.value));
           },
           () => {
             replacementBlocks.splice(index, 1);
@@ -1272,8 +1810,8 @@ image_2026-04-25.jpg</textarea>
           examples,
           block,
           () => {
-            regexInput.value = block.regex;
-            replaceInput.value = block.replacement;
+            regexInput.value = localText(block.regex);
+            replaceInput.value = localText(block.replacement);
             update();
           },
           () => {
@@ -1291,6 +1829,7 @@ image_2026-04-25.jpg</textarea>
       renderQuickBlocks();
       renderReplacementBlocks();
       renderExampleBlocks();
+      renderLearningExamples();
     }
 
     document.getElementById("copyRegex").onclick = () => copyText(regexInput.value, t("regexCopied"));
@@ -1352,12 +1891,15 @@ image_2026-04-25.jpg</textarea>
         : t("nothingToExport");
     };
     document.getElementById("resetSample").onclick = () => {
-      sample.value = initialSample;
+      sample.value = defaultSamples[currentLang] || initialSample;
       update();
     };
     languageSelect.onchange = () => {
+      const previousSample = defaultSamples[currentLang];
+      const shouldTranslateSample = sample.value === previousSample;
       currentLang = languageSelect.value;
       localStorage.setItem(storageKeys.language, currentLang);
+      if (shouldTranslateSample) sample.value = defaultSamples[currentLang] || initialSample;
       applyI18n();
     };
 
